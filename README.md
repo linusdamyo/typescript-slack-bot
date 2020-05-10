@@ -1,1 +1,1 @@
-# typescript-slack-bot
+# 타입스크립트로 슬랙 봇 만들기
