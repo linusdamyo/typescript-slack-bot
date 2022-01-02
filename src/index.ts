@@ -1,39 +1,33 @@
+if (process.env.DOT_ENV_PATH) {
+  require('dotenv').config({ path: process.env.DOT_ENV_PATH });
+}
+
+import 'reflect-metadata';
 import express from 'express';
-import { WebClient } from '@slack/web-api';
-import { createEventAdapter } from '@slack/events-api';
 import { createServer } from 'http';
+import { closeDb, configDb } from './configDb';
+import SlackEventService from './services/SlackEventService';
 
-// 생성한 슬랙봇에 대한 키값들
-import CONFIG from '../config/bot.json';
-/* 
-  {
-    "SIGNING_SECRET": "XXXX",
-    "BOT_USER_OAUTH_ACCESS_TOKEN": "xoxb-XXXX"
-  }
- */
-
-// 슬랙에서 슬랙봇에게 접근가능한 엔드포인트를 만들기 위해 웹서버(express)를 사용
 const app = express();
 
-const slackEvents = createEventAdapter(CONFIG.SIGNING_SECRET);
-const webClient = new WebClient(CONFIG.BOT_USER_OAUTH_ACCESS_TOKEN);
+configDb();
 
-// 메시지 이벤트 구독하기
-slackEvents.on('message', async (event) => {
-  console.log(event);
+app.use('/slack/events', SlackEventService.requestListener());
 
-  if (event.text == '?하이') {
-    webClient.chat.postMessage({
-      text: '안녕하세요!',
-      channel: event.channel,
-    });
-  }
-});
-
-// 메지지 이벤트 엔드포인트를 express 에 등록하기
-app.use('/slack/events', slackEvents.requestListener());
-
-// express 웹 서버 실행
-createServer(app).listen(3000, () => {
+const server = createServer(app).listen(18000, () => {
   console.log('run slack bot');
 });
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server')
+  server.close(() => {
+    console.log('HTTP server closed')
+    closeDb()
+    .then(() => {
+      console.log('DB disconnected.')
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  })
+})

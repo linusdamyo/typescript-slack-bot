@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
+    "target": "ES2017",
+    "module": "CommonJS",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "strictFunctionTypes": true
+    "emitDecoratorMetadata": true,
+    "strictFunctionTypes": true,
+    "outDir": "dist"
   },
   "include": ["src/*"]
 }
