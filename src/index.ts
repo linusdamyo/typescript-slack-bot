@@ -3,6 +3,7 @@ if (process.env.DOT_ENV_PATH) {
 }
 
 import 'reflect-metadata';
+import path from 'path';
 import express from 'express';
 import { createServer } from 'http';
 import { closeDb, configDb } from './configDb';
@@ -13,6 +14,11 @@ const app = express();
 configDb();
 
 app.use('/slack/events', SlackEventService.requestListener());
+
+app.use(express.static('public'))
+// app.use('', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../public/index.html'))
+// })
 
 const server = createServer(app).listen(Number(process.env.PORT) || 18000, () => {
   console.log(`run slack bot PORT: ${Number(process.env.PORT) || 18000}`);
