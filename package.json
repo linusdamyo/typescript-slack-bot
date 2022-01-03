@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "NODE_ENV=development nodemon --watch 'src/**/*.ts' --exec 'ts-node' -r dotenv/config src/index.ts",
     "serve": "NODE_ENV=production node -r dotenv/config dist/src/index.js",
     "build": "npm run clean && npm run tsc",
     "clean": "rimraf --no-glob dist",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^14.18.2",
+    "nodemon": "^2.0.15",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",
     "tsc": "^2.0.3",

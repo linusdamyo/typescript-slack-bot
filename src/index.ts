@@ -14,8 +14,8 @@ configDb();
 
 app.use('/slack/events', SlackEventService.requestListener());
 
-const server = createServer(app).listen(18000, () => {
-  console.log('run slack bot');
+const server = createServer(app).listen(Number(process.env.PORT) || 18000, () => {
+  console.log(`run slack bot PORT: ${Number(process.env.PORT) || 18000}`);
 });
 
 process.on('SIGTERM', () => {
