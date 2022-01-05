@@ -18,12 +18,12 @@ export class MessageHashtagMapEntity implements MessageHashtagMapInterface {
   @CreateDateColumn({ name: 'reg_date' })
   regDate: Date;
 
-  @ManyToOne(type => MessageArchiveEntity, _ => _.messageHashtagMapInfoList)
-  @JoinColumn({ name: 'message_archive_id' })
+  @ManyToOne(() => MessageArchiveEntity, _ => _.messageHashtagMapInfoList)
+  @JoinColumn({ name: 'message_archive_id', referencedColumnName: 'id' })
   messageArchiveInfo: MessageArchiveEntity;
 
-  @ManyToOne(type => HashtagEntity, _ => _.messageHashtagMapInfoList)
-  @JoinColumn({ name: 'hashtag_id' })
+  @ManyToOne(() => HashtagEntity, _ => _.messageHashtagMapInfoList)
+  @JoinColumn({ name: 'hashtag_id', referencedColumnName: 'id' })
   hashtagInfo: HashtagEntity;
 
 }

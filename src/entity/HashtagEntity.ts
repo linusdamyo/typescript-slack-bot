@@ -17,7 +17,7 @@ export class HashtagEntity implements HashtagInterface {
   @CreateDateColumn({ name: 'reg_date' })
   regDate: Date;
 
-  @OneToMany(type => MessageHashtagMapEntity, _ => _.hashtagInfo)
+  @OneToMany(() => MessageHashtagMapEntity, _ => _.hashtagInfo)
   messageHashtagMapInfoList: MessageHashtagMapEntity[];
 
 }

@@ -35,7 +35,7 @@ export class MessageArchiveEntity implements MessageArchiveInterface {
   @CreateDateColumn({ name: 'reg_date' })
   regDate: Date;
 
-  @OneToMany(type => MessageHashtagMapEntity, _ => _.messageArchiveInfo)
+  @OneToMany(() => MessageHashtagMapEntity, _ => _.messageArchiveInfo)
   messageHashtagMapInfoList: MessageHashtagMapEntity[];
 
 }
