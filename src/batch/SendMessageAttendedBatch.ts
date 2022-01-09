@@ -13,7 +13,7 @@ class SendMessageAttended {
     const userList = await MessageArchiveService.getYesterdayAttendedUserList();
     console.log('userList');
     console.log(userList);
-    await SlackWebClient.sendMessageAttended('U02CLSBF280', userList.length > 0 ? userList.join('\n') : '아무도 안함');
+    await SlackWebClient.sendMessageAttended(userList.length > 0 ? userList.join('\n') : '아무도 안함');
     await closeDb();
   }
 }

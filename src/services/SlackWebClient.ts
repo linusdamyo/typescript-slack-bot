@@ -1,4 +1,5 @@
 import { WebClient } from '@slack/web-api';
+import axios from 'axios';
 
 export class SlackWebClient {
   private static webClient = new WebClient(process.env.BOT_USER_OAUTH_ACCESS_TOKEN);
@@ -21,17 +22,31 @@ export class SlackWebClient {
     return channelName
   }
 
-  public static async sendMessageAttended(user: string, message: string): Promise<void> {
+  public static async sendMessageAttended(message: string): Promise<void> {
     await this.webClient.chat.postMessage({
-      channel: user,
+      channel: process.env.LIMNI,
       text: message,
     })
   }
 
   public static async sendError(error: any): Promise<void> {
-    await this.webClient.chat.postMessage({
-      channel: 'U02CLSBF280',
-      text: `${error.toString()}\n${error.stack}`,
+    await axios({
+      url: process.env.NODE_ENV === 'production'
+        ? 'https://hooks.slack.com/services/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'
+        : 'https://hooks.slack.com/services/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',
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        attachments: [
+          {
+            color: '#ff0000',
+            fallback: error.toString(),
+            text: error.stack,
+          }
+        ]
+      }
     })
   }
 
