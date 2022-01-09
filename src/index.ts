@@ -16,6 +16,11 @@ configDb();
 
 app.use('/slack/events', SlackEventService.requestListener());
 
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Server Error!');
+});
+
 const server = createServer(app).listen(Number(process.env.PORT) || 18000, () => {
   console.log(`run slack bot PORT: ${Number(process.env.PORT) || 18000}`);
 });

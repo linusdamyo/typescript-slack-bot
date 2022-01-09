@@ -30,6 +30,7 @@ export class SlackMessageProcess {
   public static async processMessageChanged(event: SlackMessageChangedInterface): Promise<void> {
     const clientMsgId = event.message?.client_msg_id
     const messageArchiveInfo = await MessageArchiveService.getMessageArchiveInfoByClientMsgId(clientMsgId)
+    if (!messageArchiveInfo) return;
 
     await getManager().transaction(async (entityManager: EntityManager) => {
       await MessageArchiveService.insertMessageTrash(entityManager, messageArchiveInfo)
@@ -42,6 +43,7 @@ export class SlackMessageProcess {
   public static async processMessageDeleted(event: SlackMessageDeletedInterface): Promise<void> {
     const clientMsgId = event.previous_message?.client_msg_id
     const messageArchiveInfo = await MessageArchiveService.getMessageArchiveInfoByClientMsgId(clientMsgId)
+    if (!messageArchiveInfo) return;
 
     await getManager().transaction(async (entityManager: EntityManager) => {
       await MessageArchiveService.insertMessageTrash(entityManager, messageArchiveInfo)
