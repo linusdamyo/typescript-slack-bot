@@ -31,9 +31,7 @@ export class SlackWebClient {
 
   public static async sendError(error: any): Promise<void> {
     await axios({
-      url: process.env.NODE_ENV === 'production'
-        ? 'https://hooks.slack.com/services/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'
-        : 'https://hooks.slack.com/services/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',
+      url: process.env.SLACK_WEBHOOK_ERROR,
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
