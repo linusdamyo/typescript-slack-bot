@@ -3,13 +3,17 @@ if (process.env.DOT_ENV_PATH) {
 }
 
 import 'reflect-metadata';
-import { closeDb, configDb } from '../configDb';
+import { closeDb, connDb } from '../configDb';
 import { SlackWebClient } from '../services/SlackWebClient';
+import { MessageArchiveService } from '../services/MessageArchiveService';
 
 class SendMessageAttended {
   public static async runBatch() {
-    await configDb();
-    await SlackWebClient.sendMessageAttended('U02CLSBF280', '블라블라');
+    await connDb();
+    const userList = await MessageArchiveService.getYesterdayAttendedUserList();
+    console.log('userList');
+    console.log(userList);
+    await SlackWebClient.sendMessageAttended('U02CLSBF280', userList.length > 0 ? userList.join('\n') : '아무도 안함');
     await closeDb();
   }
 }

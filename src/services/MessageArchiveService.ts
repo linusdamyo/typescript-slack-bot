@@ -53,4 +53,15 @@ export class MessageArchiveService {
     return false;
   }
 
+  public static async getYesterdayAttendedUserList(): Promise<string[]> {
+    const result = await getManager().createQueryBuilder(MessageArchiveEntity, 'archive')
+      .select('DISTINCT user_name', 'userName')
+      .where('archive.is_attended = :isAttended', { isAttended: true })
+      .andWhere('archive.reg_date >= :yesterday', { yesterday: moment.tz('Asia/Seoul').add(-1,'day').format('YYYY-MM-DD 00:00:00') })
+      .andWhere('archive.reg_date <= :today2am', { today2am: moment.tz('Asia/Seoul').format('YYYY-MM-DD 02:00:00') })
+      .getRawMany();
+
+    return result.map(r => r.userName);
+  }
+
 }
