@@ -3,6 +3,7 @@ if (process.env.DOT_ENV_PATH) {
 }
 
 import 'reflect-metadata';
+import moment from 'moment-timezone';
 import { closeDb, connDb } from '../configDb';
 import { SlackWebClient } from '../services/SlackWebClient';
 import { MessageArchiveService } from '../services/MessageArchiveService';
@@ -13,7 +14,7 @@ class SendMessageAttended {
     const userList = await MessageArchiveService.getYesterdayAttendedUserList();
     console.log('userList');
     console.log(userList);
-    await SlackWebClient.sendMessageAttended(userList.length > 0 ? userList.join('\n') : '아무도 안함');
+    await SlackWebClient.sendMessageAttended(userList.length > 0 ? `${moment.tz('Asia/Seoul').format('M월 D일 (ddd)')} 출석 명단\n${userList.join('\n')}` : '아무도 안함');
     await closeDb();
   }
 }
