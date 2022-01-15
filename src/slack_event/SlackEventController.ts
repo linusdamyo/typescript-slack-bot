@@ -1,24 +1,24 @@
 import { createEventAdapter } from '@slack/events-api';
-import { SlackMessageProcess } from './SlackMessageProcess';
-import { SlackWebClient } from './SlackWebClient';
+import { SlackEventService } from './SlackEventService';
+import { SlackWebClient } from '../library/SlackWebClient';
 
-const slackEvents = createEventAdapter(process.env.SIGNING_SECRET);
+const SlackEventController = createEventAdapter(process.env.SIGNING_SECRET);
 
 // 메시지 이벤트 구독하기
-slackEvents.on('message', async (event) => {
+SlackEventController.on('message', async (event) => {
   console.log((event));
 
   try {
     if (event.type == 'message' && event.channel_type == 'channel') {
       switch(event.subtype) {
         case 'message_changed':
-          await SlackMessageProcess.processMessageChanged(event);
+          await SlackEventService.processMessageChanged(event);
           break;
         case 'message_deleted':
-          await SlackMessageProcess.processMessageDeleted(event);
+          await SlackEventService.processMessageDeleted(event);
           break;
         default:
-          await SlackMessageProcess.processNewMessage(event);
+          await SlackEventService.processMessageNew(event);
       }
     }
   } catch(error) {
@@ -29,4 +29,4 @@ slackEvents.on('message', async (event) => {
 
 });
 
-export default slackEvents;
+export default SlackEventController;

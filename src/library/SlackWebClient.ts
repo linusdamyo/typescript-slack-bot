@@ -17,7 +17,7 @@ export class SlackWebClient {
     const response = await this.webClient.conversations.info({
       channel,
     })
-    const channelName = response?.channel?.name
+    const channelName = response?.channel?.name?.split('_').shift() || ''
     console.log(channelName)
     return channelName
   }

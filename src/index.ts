@@ -8,13 +8,13 @@ import express from 'express';
 import { createServer } from 'http';
 import https from 'https';
 import { closeDb, configDb } from './configDb';
-import SlackEventService from './services/SlackEventService';
+import SlackEventController from './slack_event/SlackEventController';
 
 const app = express();
 
 configDb();
 
-app.use('/slack/events', SlackEventService.requestListener());
+app.use('/slack/events', SlackEventController.requestListener());
 
 app.use(function(err, req, res, next) {
   console.error(err.stack);

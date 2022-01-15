@@ -4,15 +4,14 @@ import { HashtagEntity } from "../entity/HashtagEntity"
 import { HashtagInfoType } from "../interface/HashtagInterface"
 import { MessageHashtagMapEntity } from '../entity/MessageHashtagMapEntity';
 
-export class HashtagService {
+export class HashtagRepository {
 
   public static async getHashtagInfoList(): Promise<HashtagInfoType[]> {
     return await getRepository(HashtagEntity).find({ inUse: true })
   }
 
   public static async insertHashtagMap(entityManager: EntityManager, messageArchiveId: string, message: string): Promise<void> {
-    const hashtagInfoList = await HashtagService.getHashtagInfoList()
-    console.log(hashtagInfoList)
+    const hashtagInfoList = await HashtagRepository.getHashtagInfoList()
     if (_.isEmpty(hashtagInfoList)) return;
 
     const hashtagList = message?.match(/\s#\S+/g)?.map(_=>_.trim())

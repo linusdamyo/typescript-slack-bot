@@ -5,7 +5,7 @@ import { MessageArchiveRequestType, MessageArchiveInfoType } from '../interface/
 import { MessageArchiveEntity } from '../entity/MessageArchiveEntity';
 import { MessageTrashEntity } from '../entity/MessageTrashEntity';
 
-export class MessageArchiveService {
+export class MessageArchiveRepository {
 
   public static async getMessageArchiveInfoByClientMsgId(clientMsgId: string): Promise<MessageArchiveInfoType> {
     return await getManager().findOne(MessageArchiveEntity, { where: { clientMsgId } })

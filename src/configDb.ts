@@ -7,7 +7,7 @@ const dbPass: string = process.env.DB_PASS || 'ajdajdsiasia';
 const dbName: string = process.env.DB_NAME || 'limni';
 const dbLogging: boolean = process.env.DB_LOGGING === 'true';
 
-let dbConnection: Connection;
+let dbConnection: Connection = null;
 
 export function connDb(): Promise<Connection> {
   return createConnection({
@@ -37,5 +37,5 @@ export function configDb(): void {
 }
 
 export async function closeDb(): Promise<void> {
-  await dbConnection.close();
+  if (dbConnection) await dbConnection.close();
 }
