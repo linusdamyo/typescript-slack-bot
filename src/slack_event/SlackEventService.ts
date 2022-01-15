@@ -1,12 +1,15 @@
 import { EntityManager, getManager } from 'typeorm';
-import { SlackMessageChangedInterface, SlackNewMessageInterface, SlackMessageDeletedInterface } from '../interface/SlackMessageInterface';
+import { SlackMessageChangedInterface, SlackMessageNewInterface, SlackMessageDeletedInterface } from '../interface/SlackMessageInterface';
 import { SlackWebClient } from '../library/SlackWebClient';
 import { MessageArchiveRepository } from '../repository/MessageArchiveRepository';
 import { HashtagRepository } from '../repository/HashtagRepository';
 
 export class SlackEventService {
 
-  public static async processMessageNew(event: SlackNewMessageInterface): Promise<void> {
+  public static async processMessageNew(event: SlackMessageNewInterface): Promise<void> {
+    if (!event.client_msg_id) return;
+    if (!event.text) return;
+
     const channelName = await SlackWebClient.getChannelName(event.channel)
     const userName = await SlackWebClient.getUserName(event.user)
     const isAttended = await MessageArchiveRepository.checkIsAttended(event.event_ts)

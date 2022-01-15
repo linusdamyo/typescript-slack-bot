@@ -17,6 +17,9 @@ SlackEventController.on('message', async (event) => {
         case 'message_deleted':
           await SlackEventService.processMessageDeleted(event);
           break;
+        case 'channel_join':
+          // TODO: make user list
+          break;
         default:
           await SlackEventService.processMessageNew(event);
       }

@@ -10,7 +10,7 @@ export interface SlackMessageInterface {
   user: string;
 }
 
-export interface SlackNewMessageInterface extends SlackEventInterface, SlackMessageInterface {
+export interface SlackMessageNewInterface extends SlackEventInterface, SlackMessageInterface {
 }
 
 export interface SlackMessageChangedInterface extends SlackEventInterface {
@@ -19,4 +19,8 @@ export interface SlackMessageChangedInterface extends SlackEventInterface {
 
 export interface SlackMessageDeletedInterface extends SlackEventInterface {
   previous_message: SlackMessageInterface
+}
+
+export interface SlackMessageChannelJoinInterface extends SlackEventInterface {
+  user: string;
 }
