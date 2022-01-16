@@ -5,21 +5,19 @@ export class SlackWebClient {
   private static webClient = new WebClient(process.env.BOT_USER_OAUTH_ACCESS_TOKEN);
 
   public static async getUserName(user: string): Promise<string> {
-    const response = await this.webClient.users.info({
-      user,
-    });
+    const response = await this.webClient.users.info({ user });
+    if (response?.user?.is_bot) return null;
+
     const userName = response?.user?.real_name || response?.user?.profile?.display_name || ''
-    console.log(response?.user)
+    console.log(`userName: ${userName}`)
     return userName
   }
 
   public static async getChannelName(channel: string): Promise<[string, string]> {
-    const response = await this.webClient.conversations.info({
-      channel,
-    })
+    const response = await this.webClient.conversations.info({ channel })
     const channelName = response?.channel?.name || ''
     const crewName = channelName?.split('_').shift() || ''
-    console.log(channelName, crewName)
+    console.log(`channelName: ${channelName}, ${crewName}`)
     return [channelName, crewName]
   }
 

@@ -22,3 +22,5 @@ export interface AttendanceInterface {
   week7x2: ATTENDANCE_STATUS;
   regDate: Date;
 }
+
+export type AttendanceNewType = Pick<AttendanceInterface, 'crewId'|'crewName'|'userId'|'userName'>

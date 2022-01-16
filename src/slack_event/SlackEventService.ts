@@ -1,9 +1,10 @@
 import { EntityManager, getManager } from 'typeorm';
-import { SlackMessageChangedInterface, SlackMessageNewInterface, SlackMessageDeletedInterface } from '../interface/SlackMessageInterface';
+import { SlackMessageChangedInterface, SlackMessageNewInterface, SlackMessageDeletedInterface, SlackMessageChannelJoinInterface } from '../interface/SlackMessageInterface';
 import { SlackWebClient } from '../library/SlackWebClient';
 import { MessageArchiveRepository } from '../repository/MessageArchiveRepository';
 import { HashtagRepository } from '../repository/HashtagRepository';
 import { CrewRepository } from '../repository/CrewRepository';
+import { AttendanceRepository } from '../repository/AttendanceRepository';
 
 export class SlackEventService {
 
@@ -13,6 +14,8 @@ export class SlackEventService {
 
     const [channelName, crewName] = await SlackWebClient.getChannelName(event.channel)
     const userName = await SlackWebClient.getUserName(event.user)
+    if (userName === null) return;
+
     const isAttended = await MessageArchiveRepository.checkIsAttended(event.event_ts)
     const crewId = await CrewRepository.getCrewIdByCrewName(crewName)
 
@@ -55,6 +58,24 @@ export class SlackEventService {
     await getManager().transaction(async (entityManager: EntityManager) => {
       await MessageArchiveRepository.insertMessageTrash(entityManager, messageArchiveInfo)
       await MessageArchiveRepository.deleteMessage(entityManager, messageArchiveInfo.id)
+    })
+  }
+
+  public static async processChannelJoin(event: SlackMessageChannelJoinInterface): Promise<void> {
+    const crewInfo = await CrewRepository.getCurrentCrewInfo()
+    console.log(crewInfo)
+    if (!crewInfo) return;
+
+    if (await AttendanceRepository.hasAttendanceByUserIdAndCrewId(event.user, crewInfo.id)) return;
+
+    const userName = await SlackWebClient.getUserName(event.user)
+    if (userName === null) return;
+
+    await AttendanceRepository.insertAttendanceNew({
+      crewId: crewInfo.id,
+      crewName: crewInfo.crewName,
+      userId: event.user,
+      userName,
     })
   }
 
