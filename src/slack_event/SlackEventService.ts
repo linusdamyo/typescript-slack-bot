@@ -63,7 +63,7 @@ export class SlackEventService {
 
   public static async processChannelJoin(event: SlackMessageChannelJoinInterface): Promise<void> {
     const crewInfo = await CrewRepository.getCurrentCrewInfo()
-    console.log(crewInfo)
+    console.log(crewInfo.crewName)
     if (!crewInfo) return;
 
     if (await AttendanceRepository.hasAttendanceByUserIdAndCrewId(event.user, crewInfo.id)) return;

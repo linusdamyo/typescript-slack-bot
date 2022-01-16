@@ -8,7 +8,7 @@ export class SlackWebClient {
     const response = await this.webClient.users.info({ user });
     if (response?.user?.is_bot) return null;
 
-    const userName = response?.user?.real_name || response?.user?.profile?.display_name || ''
+    const userName = response?.user?.profile?.display_name || response?.user?.real_name || ''
     console.log(`userName: ${userName}`)
     return userName
   }
