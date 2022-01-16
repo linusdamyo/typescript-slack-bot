@@ -25,6 +25,7 @@ export class SlackWebClient {
     await this.webClient.chat.postMessage({
       channel: process.env.LIMNI,
       text: message,
+      
     })
   }
 

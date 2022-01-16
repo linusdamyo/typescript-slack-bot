@@ -25,6 +25,18 @@
       "env": {
         "DOT_ENV_PATH": "/project/limni/.env"
       }
+    },
+    {
+      "name": "UpdateAttendanceBatch",
+      "script": "/project/limni/dist/batch/UpdateAttendanceBatch.js",
+      "instances": 1,
+      "error_file": "/var/log/pm2/limni-batch.log",
+      "out_file": "/var/log/pm2/limni-batch.log",
+      "merge_logs": true,
+      "autorestart": false,
+      "env": {
+        "DOT_ENV_PATH": "/project/limni/.env"
+      }
     }
   ]
 }

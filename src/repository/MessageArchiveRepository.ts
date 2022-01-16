@@ -60,7 +60,7 @@ export class MessageArchiveRepository {
       .select('DISTINCT user_name', 'userName')
       .where('archive.is_attended = :isAttended', { isAttended: true })
       .andWhere('archive.reg_date >= :yesterday', { yesterday: moment.tz('Asia/Seoul').add(-1,'day').format('YYYY-MM-DD 00:00:00') })
-      .andWhere('archive.reg_date <= :today2am', { today2am: moment.tz('Asia/Seoul').format('YYYY-MM-DD 02:00:00') })
+      .andWhere('archive.reg_date <= :today', { today: moment.tz('Asia/Seoul').format('YYYY-MM-DD 23:59:59') })
       .getRawMany();
 
     return result.map(r => r.userName);

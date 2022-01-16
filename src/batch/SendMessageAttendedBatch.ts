@@ -11,10 +11,10 @@ import { MessageArchiveRepository } from '../repository/MessageArchiveRepository
 class SendMessageAttendedBatch {
   public static async runBatch() {
     await connDb();
+
     const userList = await MessageArchiveRepository.getYesterdayAttendedUserList();
-    console.log('userList');
-    console.log(userList);
-    await SlackWebClient.sendMessageAttended(userList.length > 0 ? `${moment.tz('Asia/Seoul').format('M월 D일 (ddd)')} 출석 명단\n${userList.join('\n')}` : '아무도 안함');
+    await SlackWebClient.sendMessageAttended(userList.length > 0 ? `${moment.tz('Asia/Seoul').add(-1, 'days').format('M월 D일 (ddd)')} 출석 명단\n${userList.join('\n')}` : '아무도 안함');
+
     await closeDb();
   }
 }
