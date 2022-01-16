@@ -3,6 +3,8 @@ import { MessageHashtagMapInterface } from './MessageHashtagMapInterface';
 export interface MessageArchiveInterface {
   id: string;
   channelName: string;
+  crewId: string;
+  crewName: string;
   userName: string;
   message: string;
   isAttended: boolean;

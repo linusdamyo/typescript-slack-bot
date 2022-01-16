@@ -20,6 +20,8 @@ export class MessageArchiveRepository {
     const result: InsertResult = await entityManager.insert(MessageTrashEntity, {
       messageArchiveId: messageArchiveInfo.id,
       channelName: messageArchiveInfo.channelName,
+      crewId: messageArchiveInfo.crewId,
+      crewName: messageArchiveInfo.crewName,
       userName: messageArchiveInfo.userName,
       message: messageArchiveInfo.message,
       clientMsgId: messageArchiveInfo.clientMsgId,

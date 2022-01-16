@@ -13,6 +13,12 @@ export class MessageTrashEntity implements MessageTrashInterface {
   @Column({ name: 'channel_name' })
   channelName: string;
 
+  @Column({ name: 'crew_id', type: 'bigint' })
+  crewId: string;
+
+  @Column({ name: 'crew_name' })
+  crewName: string;
+
   @Column({ name: 'user_name' })
   userName: string;
 

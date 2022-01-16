@@ -9,17 +9,18 @@ export class SlackWebClient {
       user,
     });
     const userName = response?.user?.real_name || response?.user?.profile?.display_name || ''
-    console.log(userName)
+    console.log(response?.user)
     return userName
   }
 
-  public static async getChannelName(channel: string): Promise<string> {
+  public static async getChannelName(channel: string): Promise<[string, string]> {
     const response = await this.webClient.conversations.info({
       channel,
     })
-    const channelName = response?.channel?.name?.split('_').shift() || ''
-    console.log(channelName)
-    return channelName
+    const channelName = response?.channel?.name || ''
+    const crewName = channelName?.split('_').shift() || ''
+    console.log(channelName, crewName)
+    return [channelName, crewName]
   }
 
   public static async sendMessageAttended(message: string): Promise<void> {

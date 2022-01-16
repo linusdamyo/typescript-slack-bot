@@ -3,6 +3,7 @@ import { SlackMessageChangedInterface, SlackMessageNewInterface, SlackMessageDel
 import { SlackWebClient } from '../library/SlackWebClient';
 import { MessageArchiveRepository } from '../repository/MessageArchiveRepository';
 import { HashtagRepository } from '../repository/HashtagRepository';
+import { CrewRepository } from '../repository/CrewRepository';
 
 export class SlackEventService {
 
@@ -10,13 +11,16 @@ export class SlackEventService {
     if (!event.client_msg_id) return;
     if (!event.text) return;
 
-    const channelName = await SlackWebClient.getChannelName(event.channel)
+    const [channelName, crewName] = await SlackWebClient.getChannelName(event.channel)
     const userName = await SlackWebClient.getUserName(event.user)
     const isAttended = await MessageArchiveRepository.checkIsAttended(event.event_ts)
+    const crewId = await CrewRepository.getCrewIdByCrewName(crewName)
 
     await getManager().transaction(async (entityManager: EntityManager) => {
       const messageArchiveId = await MessageArchiveRepository.insertMessage(entityManager, {
         channelName,
+        crewId,
+        crewName,
         userName,
         isAttended,
         message: event.text,
