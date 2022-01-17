@@ -21,7 +21,9 @@ SlackEventController.on('message', async (event) => {
           await SlackEventService.processChannelJoin(event);
           break;
         default:
-          await SlackEventService.processMessageNew(event);
+          if (!event.thread_ts) { // 답글은 거른다.
+            await SlackEventService.processMessageNew(event);
+          }
       }
     }
   } catch(error) {
