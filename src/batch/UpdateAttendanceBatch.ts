@@ -7,12 +7,26 @@ import moment from 'moment-timezone';
 import { closeDb, connDb } from '../configDb';
 import { CrewRepository } from '../repository/CrewRepository';
 import { AttendanceRepository } from '../repository/AttendanceRepository';
+import { MessageArchiveRepository } from '../repository/MessageArchiveRepository';
 
 class UpdateAttendanceBatch {
   public static async runBatch() {
     await connDb();
 
     const crewInfo = await CrewRepository.getCurrentCrewInfo()
+
+    const userList = await MessageArchiveRepository.getYesterdayAttendedUserList();
+    for (const { userId, userName } of userList) {
+      if (await AttendanceRepository.hasAttendanceByUserIdAndCrewId(userId, crewInfo.id)) continue;
+
+      await AttendanceRepository.insertAttendanceNew({
+        crewId: crewInfo.id,
+        crewName: crewInfo.crewName,
+        userId,
+        userName,
+      })
+    }
+
     const week = Math.floor(moment().diff(moment(crewInfo.startYmd), 'days')/7)+1
     const col = `week${week}x${moment().day() <= 3 ? '1' : '2'}`
     await AttendanceRepository.updateAttendanceWeek(crewInfo.id, col)
