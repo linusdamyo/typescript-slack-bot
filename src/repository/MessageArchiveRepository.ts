@@ -44,12 +44,12 @@ export class MessageArchiveRepository {
     const m = moment(Number(eventTs) * 1000).tz('Asia/Seoul');
     const day = m.day();
     const hour = m.hour();
-    // 화 ~ 수 02시
-    if (day === 2 || (day === 3 && hour <= 2)) {
+    // 월 ~ 수 02시
+    if (day === 1 || day === 2 || (day === 3 && hour <= 2)) {
       return true;
     }
-    // 목 ~ 금 02시
-    if (day === 4 || (day === 5 && hour <= 2)) {
+    // 수 03시 ~ 금 02시
+    if ((day === 3 && hour >= 3) || day === 4 || (day === 5 && hour <= 2)) {
       return true;
     }
     return false;
