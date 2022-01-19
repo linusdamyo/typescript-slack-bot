@@ -41,18 +41,34 @@ export class MessageArchiveRepository {
     await entityManager.delete(MessageArchiveEntity, messageArchiveId);
   }
 
-  public static async checkIsAttended(eventTs: string): Promise<boolean> {
+  public static async checkIsAttended(channelName: string, eventTs: string): Promise<boolean> {
     const m = moment(Number(eventTs) * 1000).tz('Asia/Seoul');
     const day = m.day();
     const hour = m.hour();
-    // 월 ~ 수 02시
-    if (day === 1 || day === 2 || (day === 3 && hour <= 2)) {
-      return true;
+
+    try {
+      const weekSeq = channelName.split('_')[2][0]
+
+      if (weekSeq === '1') {
+        // 월 ~ 수 02시
+        if (day === 1 || day === 2 || (day === 3 && hour < 2) || (day === 3 && m.format('HH:mm:SS') === '02:00:00')) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      if (weekSeq === '2') {
+        // 수 03시 ~ 금 02시
+        if ((day === 3 && hour >= 3) || day === 4 || (day === 5 && hour < 2) || (day === 5 && m.format('HH:mm:SS') === '02:00:00')) {
+          return true;
+        } else {
+        return false;
+        }
+      }
+    } catch (err) {
     }
-    // 수 03시 ~ 금 02시
-    if ((day === 3 && hour >= 3) || day === 4 || (day === 5 && hour <= 2)) {
-      return true;
-    }
+
     return false;
   }
 

@@ -16,7 +16,7 @@ export class SlackEventService {
     const userInfo = await SlackWebClient.getUserInfo(event.user)
     if (userInfo === null) return;
 
-    const isAttended = await MessageArchiveRepository.checkIsAttended(event.event_ts)
+    const isAttended = await MessageArchiveRepository.checkIsAttended(channelName, event.event_ts)
     const crewId = await CrewRepository.getCrewIdByCrewName(crewName)
 
     await getManager().transaction(async (entityManager: EntityManager) => {
