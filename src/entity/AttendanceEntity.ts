@@ -20,6 +20,9 @@ export class AttendanceEntity implements AttendanceInterface {
   @Column({ name: 'user_name' })
   userName: string;
 
+  @Column({ name: 'user_email' })
+  userEmail: string;
+
   @Column('enum', { enum: ATTENDANCE_STATUS, name: 'week1_1' })
   week1x1: ATTENDANCE_STATUS;
 
