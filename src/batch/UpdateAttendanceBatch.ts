@@ -16,7 +16,7 @@ class UpdateAttendanceBatch {
     const crewInfo = await CrewRepository.getCurrentCrewInfo()
 
     const userList = await MessageArchiveRepository.getYesterdayAttendedUserList();
-    for (const { userId, userName } of userList) {
+    for (const { userId, userName, userEmail } of userList) {
       if (await AttendanceRepository.hasAttendanceByUserIdAndCrewId(userId, crewInfo.id)) continue;
 
       await AttendanceRepository.insertAttendanceNew({
@@ -24,6 +24,7 @@ class UpdateAttendanceBatch {
         crewName: crewInfo.crewName,
         userId,
         userName,
+        userEmail,
       })
     }
 

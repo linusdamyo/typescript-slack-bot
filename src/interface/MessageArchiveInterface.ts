@@ -6,6 +6,7 @@ export interface MessageArchiveInterface {
   crewId: string;
   crewName: string;
   userName: string;
+  userEmail: string;
   message: string;
   isAttended: boolean;
   clientMsgId: string;

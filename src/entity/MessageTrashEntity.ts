@@ -22,6 +22,9 @@ export class MessageTrashEntity implements MessageTrashInterface {
   @Column({ name: 'user_name' })
   userName: string;
 
+  @Column({ name: 'user_email' })
+  userEmail: string;
+
   @Column({ name: 'message' })
   message: string;
 

@@ -4,13 +4,14 @@ import axios from 'axios';
 export class SlackWebClient {
   private static webClient = new WebClient(process.env.BOT_USER_OAUTH_ACCESS_TOKEN);
 
-  public static async getUserName(user: string): Promise<string> {
+  public static async getUserInfo(user: string): Promise<[string, string]> {
     const response = await this.webClient.users.info({ user });
     if (response?.user?.is_bot) return null;
 
     const userName = response?.user?.profile?.display_name || response?.user?.real_name || ''
-    console.log(`userName: ${userName}`)
-    return userName
+    const userEmail = response?.user?.profile?.email || ''
+    console.log(`userName: ${userName}, userEmail: ${userEmail}`)
+    return [userName, userEmail]
   }
 
   public static async getChannelName(channel: string): Promise<[string, string]> {
@@ -25,7 +26,6 @@ export class SlackWebClient {
     await this.webClient.chat.postMessage({
       channel: process.env.LIMNI,
       text: message,
-      
     })
   }
 

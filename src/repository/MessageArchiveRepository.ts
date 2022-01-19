@@ -23,6 +23,7 @@ export class MessageArchiveRepository {
       crewId: messageArchiveInfo.crewId,
       crewName: messageArchiveInfo.crewName,
       userName: messageArchiveInfo.userName,
+      userEmail: messageArchiveInfo.userEmail,
       message: messageArchiveInfo.message,
       clientMsgId: messageArchiveInfo.clientMsgId,
       userId: messageArchiveInfo.userId,
@@ -55,7 +56,7 @@ export class MessageArchiveRepository {
     return false;
   }
 
-  public static async getYesterdayAttendedUserList(): Promise<{ userId: string, userName: string}[]> {
+  public static async getYesterdayAttendedUserList(): Promise<{ userId: string, userName: string, userEmail: string}[]> {
     const startDate = moment.tz('Asia/Seoul').day() === 3
       ? moment.tz('Asia/Seoul').add(-2,'day').format('YYYY-MM-DD 00:00:00')
       : moment.tz('Asia/Seoul').add(-2,'day').format('YYYY-MM-DD 03:00:00')
@@ -63,6 +64,7 @@ export class MessageArchiveRepository {
     const result = await getManager().createQueryBuilder(MessageArchiveEntity, 'archive')
       .select('DISTINCT user_name', 'userName')
       .addSelect('user_id', 'userId')
+      .addSelect('user_email', 'userEmail')
       .where('archive.is_attended = :isAttended', { isAttended: true })
       .andWhere('archive.reg_date >= :startDate', { startDate })
       .andWhere('archive.reg_date <= :today', { today: moment.tz('Asia/Seoul').format('YYYY-MM-DD 23:59:59') })
@@ -70,7 +72,8 @@ export class MessageArchiveRepository {
 
     return result.map(r => ({
       userId: r.userId,
-      userName: r.userName
+      userName: r.userName,
+      userEmail: r.userEmail,
     }));
   }
 

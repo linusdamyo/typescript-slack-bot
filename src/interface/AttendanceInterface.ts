@@ -6,6 +6,7 @@ export interface AttendanceInterface {
   crewName: string;
   userId: string;
   userName: string;
+  userEmail: string;
   week1x1: ATTENDANCE_STATUS;
   week1x2: ATTENDANCE_STATUS;
   week2x1: ATTENDANCE_STATUS;
@@ -23,4 +24,4 @@ export interface AttendanceInterface {
   regDate: Date;
 }
 
-export type AttendanceNewType = Pick<AttendanceInterface, 'crewId'|'crewName'|'userId'|'userName'>
+export type AttendanceNewType = Pick<AttendanceInterface, 'crewId'|'crewName'|'userId'|'userName'|'userEmail'>

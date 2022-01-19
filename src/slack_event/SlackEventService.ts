@@ -13,8 +13,8 @@ export class SlackEventService {
     if (!event.text) return;
 
     const [channelName, crewName] = await SlackWebClient.getChannelName(event.channel)
-    const userName = await SlackWebClient.getUserName(event.user)
-    if (userName === null) return;
+    const userInfo = await SlackWebClient.getUserInfo(event.user)
+    if (userInfo === null) return;
 
     const isAttended = await MessageArchiveRepository.checkIsAttended(event.event_ts)
     const crewId = await CrewRepository.getCrewIdByCrewName(crewName)
@@ -24,7 +24,8 @@ export class SlackEventService {
         channelName,
         crewId,
         crewName,
-        userName,
+        userName: userInfo[0],
+        userEmail: userInfo[1],
         isAttended,
         message: event.text,
         clientMsgId: event.client_msg_id,
@@ -68,14 +69,15 @@ export class SlackEventService {
 
     if (await AttendanceRepository.hasAttendanceByUserIdAndCrewId(event.user, crewInfo.id)) return;
 
-    const userName = await SlackWebClient.getUserName(event.user)
-    if (userName === null) return;
+    const userInfo = await SlackWebClient.getUserInfo(event.user)
+    if (userInfo === null) return;
 
     await AttendanceRepository.insertAttendanceNew({
       crewId: crewInfo.id,
       crewName: crewInfo.crewName,
       userId: event.user,
-      userName,
+      userName: userInfo[0],
+      userEmail: userInfo[1],
     })
   }
 
