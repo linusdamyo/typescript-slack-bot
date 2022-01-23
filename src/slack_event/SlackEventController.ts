@@ -18,7 +18,7 @@ SlackEventController.on('message', async (event) => {
           await SlackEventService.processMessageDeleted(event);
           break;
         case 'channel_join':
-          await SlackEventService.processChannelJoin(event);
+          // await SlackEventService.processChannelJoin(event);
           break;
         default:
           if (!event.thread_ts) { // 답글은 거른다.

@@ -19,6 +19,21 @@ export class SlackEventService {
     const isAttended = await MessageArchiveRepository.checkIsAttended(channelName, event.event_ts)
     const crewId = await CrewRepository.getCrewIdByCrewName(crewName)
 
+    const attendanceInfo = await AttendanceRepository.getAttendance(event.user, crewId)
+    if (!attendanceInfo) {
+      await AttendanceRepository.insertAttendanceNew({
+        crewId,
+        crewName,
+        userId: event.user,
+        userName: userInfo[0],
+        userEmail: userInfo[1],
+      })
+    } else {
+      if (attendanceInfo.userName !== userInfo[0]) {
+        await AttendanceRepository.updateAttendanceUserName(event.user, crewId, userInfo[0])
+      }
+    }
+
     await getManager().transaction(async (entityManager: EntityManager) => {
       const messageArchiveId = await MessageArchiveRepository.insertMessage(entityManager, {
         channelName,

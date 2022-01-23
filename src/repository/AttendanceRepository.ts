@@ -3,13 +3,21 @@ import moment from 'moment-timezone';
 import { getRepository, InsertResult } from "typeorm"
 import { ATTENDANCE_STATUS } from '../common/status';
 import { AttendanceEntity } from '../entity/AttendanceEntity';
-import { AttendanceNewType } from '../interface/AttendanceInterface';
+import { AttendanceNewType, AttendanceInterface } from '../interface/AttendanceInterface';
 
 export class AttendanceRepository {
 
   public static async hasAttendanceByUserIdAndCrewId(userId: string, crewId: string): Promise<boolean> {
     const cnt = await getRepository(AttendanceEntity).count({ userId, crewId })
     return cnt > 0;
+  }
+
+  public static async getAttendance(userId: string, crewId: string): Promise<AttendanceInterface> {
+    return await getRepository(AttendanceEntity).findOne({ userId, crewId })
+  }
+
+  public static async updateAttendanceUserName(userId: string, crewId: string, userName: string): Promise<void> {
+    await getRepository(AttendanceEntity).update({ userId, crewId }, { userName })
   }
 
   public static async insertAttendanceNew(params: AttendanceNewType): Promise<string> {
