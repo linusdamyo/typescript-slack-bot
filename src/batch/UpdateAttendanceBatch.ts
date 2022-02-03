@@ -14,8 +14,7 @@ class UpdateAttendanceBatch {
   public static async runBatch() {
     const today = moment().format('YYYY-MM-DD')
     // 방학
-    // const vacations = ['2022-02-02', '2022-02-04']
-    const vacations = ['2022-01-26', '2022-01-28']
+    const vacations = ['2022-02-02', '2022-02-04']
     if (vacations.includes(today)) {
       return;
     }
