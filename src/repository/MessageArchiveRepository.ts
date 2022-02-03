@@ -1,3 +1,4 @@
+import { CrewEntity } from './../entity/CrewEntity';
 import _ from 'lodash';
 import moment from 'moment-timezone';
 import { EntityManager, getManager, InsertResult } from "typeorm";
@@ -84,6 +85,21 @@ export class MessageArchiveRepository {
       .where('archive.is_attended = :isAttended', { isAttended: true })
       .andWhere('archive.reg_date >= :startDate', { startDate })
       .andWhere('archive.reg_date <= :today', { today: moment.tz('Asia/Seoul').format('YYYY-MM-DD 23:59:59') })
+      .getRawMany();
+
+    return result.map(r => ({
+      userId: r.userId,
+      userName: r.userName,
+      userEmail: r.userEmail,
+    }));
+  }
+
+  public static async getNewMessageUserList(lastMessageArchiveId: string): Promise<{ userId: string, userName: string, userEmail: string}[]> {
+    const result = await getManager().createQueryBuilder(MessageArchiveEntity, 'archive')
+      .select('DISTINCT user_name', 'userName')
+      .addSelect('user_id', 'userId')
+      .addSelect('user_email', 'userEmail')
+      .where('archive.id > :lastMessageArchiveId', { lastMessageArchiveId })
       .getRawMany();
 
     return result.map(r => ({

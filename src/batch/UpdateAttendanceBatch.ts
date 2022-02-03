@@ -23,8 +23,9 @@ class UpdateAttendanceBatch {
     await connDb();
 
     const crewInfo = await CrewRepository.getCurrentCrewInfo()
+    if (!crewInfo) return;
 
-    const userList = await MessageArchiveRepository.getYesterdayAttendedUserList();
+    const userList = await MessageArchiveRepository.getNewMessageUserList(crewInfo.lastMessageArchiveId);
     for (const { userId, userName, userEmail } of userList) {
       if (await AttendanceRepository.hasAttendanceByUserIdAndCrewId(userId, crewInfo.id)) continue;
 
@@ -41,19 +42,25 @@ class UpdateAttendanceBatch {
     const week = Math.floor(moment().diff(moment(crewInfo.startYmd), 'days')/7)+1 + vacationOffset
     const col = `week${week}x${moment().day() <= 3 ? '1' : '2'}`
     await AttendanceRepository.updateAttendanceWeek(crewInfo.id, col)
-
-    await closeDb();
   }
 }
 
 UpdateAttendanceBatch.runBatch()
 .then(() => {
   console.log('batch done.')
-  process.exit(0);
+  closeDb().then(() => {
+    process.exit(0);
+  }).catch(() => {
+    console.log('closeDb() error');
+  })
 })
 .catch((error) => {
   console.log('batch error.')
   console.log(error);
   console.log(error.stack);
-  process.exit(1);
+  closeDb().then(() => {
+    process.exit(1);
+  }).catch(() => {
+    console.log('closeDb() error');
+  })
 })
