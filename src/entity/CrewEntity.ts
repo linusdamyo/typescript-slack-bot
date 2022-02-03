@@ -10,6 +10,9 @@ export class CrewEntity implements CrewInterface {
   @Column({ name: 'crew_name' })
   crewName: string;
 
+  @Column({ name: 'last_message_archive_id' })
+  lastMessageArchiveId: string;
+
   @Column({ name: 'start_ymd' })
   startYmd: string;
 

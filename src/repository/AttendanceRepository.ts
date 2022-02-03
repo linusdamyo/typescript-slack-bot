@@ -1,9 +1,11 @@
+import { CrewEntity } from './../entity/CrewEntity';
 import _ from 'lodash';
 import moment from 'moment-timezone';
 import { getRepository, InsertResult } from "typeorm"
 import { ATTENDANCE_STATUS } from '../common/status';
 import { AttendanceEntity } from '../entity/AttendanceEntity';
 import { AttendanceNewType, AttendanceInterface } from '../interface/AttendanceInterface';
+import { MessageArchiveEntity } from '../entity/MessageArchiveEntity';
 
 export class AttendanceRepository {
 
@@ -26,29 +28,37 @@ export class AttendanceRepository {
   }
 
   public static async updateAttendanceWeek(crewId: string, colName: string): Promise<void> {
+    const messageArchive = await getRepository(MessageArchiveEntity).findOne({ order: { id: 'DESC' }})
+    const lastMessageArchiveId = messageArchive?.id || '0';
+
+    const crewInfo = await getRepository(CrewEntity).findOne(crewId)
+
     await getRepository(AttendanceEntity).createQueryBuilder('attendance')
       .update()
-      .set({ [colName]: ATTENDANCE_STATUS.ATTENDED })
+      .set({ [colName]: ATTENDANCE_STATUS.ABSENT })
       .where(`user_id IN (
         SELECT user_id FROM tb_message_archive
-        WHERE reg_date >= '${moment.tz('Asia/Seoul').add(-1,'day').format('YYYY-MM-DD 00:00:00')}'
-        AND reg_date <= '${moment.tz('Asia/Seoul').format('YYYY-MM-DD 23:59:59')}'
-        AND crew_id = ${crewId}
-        AND is_attended = 1
+        WHERE crew_id = ${crewId}
+        AND id > ${crewInfo.lastMessageArchiveId}
+        AND id <= ${lastMessageArchiveId}
+        AND is_attended = 0
       )`)
       .execute();
 
     await getRepository(AttendanceEntity).createQueryBuilder('attendance')
       .update()
-      .set({ [colName]: ATTENDANCE_STATUS.ABSENT })
+      .set({ [colName]: ATTENDANCE_STATUS.ATTENDED })
       .where(`user_id NOT IN (
         SELECT user_id FROM tb_message_archive
-        WHERE reg_date >= '${moment.tz('Asia/Seoul').add(-1,'day').format('YYYY-MM-DD 00:00:00')}'
-        AND reg_date <= '${moment.tz('Asia/Seoul').format('YYYY-MM-DD 23:59:59')}'
-        AND crew_id = ${crewId}
+        WHERE crew_id = ${crewId}
+        AND id > ${crewInfo.lastMessageArchiveId}
+        AND id <= ${lastMessageArchiveId}
         AND is_attended = 1
       )`)
       .execute();
+
+      crewInfo.lastMessageArchiveId = lastMessageArchiveId;
+      await getRepository(CrewEntity).save(crewInfo);
   }
 
 }
