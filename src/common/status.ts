@@ -2,5 +2,6 @@
 export enum ATTENDANCE_STATUS {
   NONE = 0,
   ATTENDED = 1,
-  ABSENT = 2,
+  LATE = 2,
+  ABSENT = 3,
 }

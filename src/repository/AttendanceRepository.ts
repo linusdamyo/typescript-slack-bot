@@ -35,7 +35,7 @@ export class AttendanceRepository {
 
     await getRepository(AttendanceEntity).createQueryBuilder('attendance')
       .update()
-      .set({ [colName]: ATTENDANCE_STATUS.ABSENT })
+      .set({ [colName]: ATTENDANCE_STATUS.LATE })
       .where(`user_id IN (
         SELECT user_id FROM tb_message_archive
         WHERE crew_id = ${crewId}
@@ -43,7 +43,6 @@ export class AttendanceRepository {
         AND id <= ${lastMessageArchiveId}
         AND is_attended = 0
       )`)
-      .printSql()
       .execute();
 
     await getRepository(AttendanceEntity).createQueryBuilder('attendance')
@@ -56,7 +55,12 @@ export class AttendanceRepository {
         AND id <= ${lastMessageArchiveId}
         AND is_attended = 1
       )`)
-      .printSql()
+      .execute();
+
+    await getRepository(AttendanceEntity).createQueryBuilder('attendance')
+      .update()
+      .set({ [colName]: ATTENDANCE_STATUS.ABSENT })
+      .where(`${colName} = :none`, { none: ATTENDANCE_STATUS.NONE })
       .execute();
 
     crewInfo.lastMessageArchiveId = lastMessageArchiveId;
