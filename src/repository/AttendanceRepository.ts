@@ -43,22 +43,24 @@ export class AttendanceRepository {
         AND id <= ${lastMessageArchiveId}
         AND is_attended = 0
       )`)
+      .printSql()
       .execute();
 
     await getRepository(AttendanceEntity).createQueryBuilder('attendance')
       .update()
       .set({ [colName]: ATTENDANCE_STATUS.ATTENDED })
-      .where(`user_id NOT IN (
+      .where(`user_id IN (
         SELECT user_id FROM tb_message_archive
         WHERE crew_id = ${crewId}
         AND id > ${crewInfo.lastMessageArchiveId}
         AND id <= ${lastMessageArchiveId}
         AND is_attended = 1
       )`)
+      .printSql()
       .execute();
 
-      crewInfo.lastMessageArchiveId = lastMessageArchiveId;
-      await getRepository(CrewEntity).save(crewInfo);
+    crewInfo.lastMessageArchiveId = lastMessageArchiveId;
+    await getRepository(CrewEntity).save(crewInfo);
   }
 
 }

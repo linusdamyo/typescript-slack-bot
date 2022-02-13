@@ -10,6 +10,7 @@
       "out_file": "/var/log/pm2/limni-out.log",
       "log_file": "/var/log/pm2/limni.log",
       "merge_logs": true,
+      "autorestart": true,
       "env": {
         "DOT_ENV_PATH": "/project/limni/.env"
       }
@@ -30,8 +31,8 @@
       "name": "UpdateAttendanceBatch",
       "script": "/project/limni/dist/batch/UpdateAttendanceBatch.js",
       "instances": 1,
-      "error_file": "/var/log/pm2/limni-batch.log",
-      "out_file": "/var/log/pm2/limni-batch.log",
+      "error_file": "/var/log/pm2/limni-update-batch.log",
+      "out_file": "/var/log/pm2/limni-update-batch.log",
       "merge_logs": true,
       "autorestart": false,
       "env": {
